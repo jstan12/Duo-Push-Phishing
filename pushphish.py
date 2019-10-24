@@ -1,5 +1,5 @@
-# Purpose: Duo Push Phishing
-# Author - Joe Stanulis
+# Purpose: Phishing Duo users
+# Author: Joe Stanulis
 # Created Date: 10/18/2019
 # Updated Date: 10/24/2019
 ##
