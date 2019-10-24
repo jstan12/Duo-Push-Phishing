@@ -85,8 +85,9 @@ for groups in json_admin_response['response']:
     if x > 10: 
         more_groups = raw_input("View more groups?? [y/n] ")
         if more_groups == 'y':
-            x = 0
-            i = 0
+            groups_list = []
+            i = int(0)
+            x = int(0)
             continue
         else:
             break
