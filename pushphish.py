@@ -81,7 +81,7 @@ for groups in json_admin_response['response']:
 	i += 1
 
 	# Display 10 Duo groups at a time
-	while i >= 2: 
+	while i >= 10: 
 		more_groups = raw_input("View more groups? [y/n] ").lower()
 		if more_groups == 'y':
 			# Reset counter
@@ -91,7 +91,7 @@ for groups in json_admin_response['response']:
 			break
 		else:
 			print("Invalid response. Respond with 'y' or 'n' to continue")
-	if i >= 2:
+	if i >= 10:
 		break
 
 # Select a group number to pass to Duo			
