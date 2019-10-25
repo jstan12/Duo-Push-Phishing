@@ -1,11 +1,10 @@
+####
 # Duo Push Phishing
 # Author: Joe Stanulis
-##
-# Reference Links:
+### Reference Links ###
 # https://duo.com/docs/authapi
 # https://duo.com/docs/adminapi
-
-## TO DO ##
+### TO DO ###
 # User Pagination - Script is currently limited to 300 users
 # Group Pagination - Script is currently limited to 100 groups
 ####
@@ -42,7 +41,7 @@ def sign(method, host, path, params, skey, ikey):
     # return headers
     return {'Date': now, 'Authorization': 'Basic %s' % base64.b64encode(auth)}
 
-#### Duo Keys ####
+############ Duo Keys ############
 # Duo host API
 duo_host = "api-XXXXXXXX.duosecurity.com"
 # Duo Admin API keys
@@ -51,15 +50,15 @@ duo_admin_skey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 # Duo Auth API keys
 duo_auth_ikey = "DXXXXXXXXXXXXXXXXXXX"
 duo_auth_skey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-#### Duo Keys ####
+############ Duo Keys ############
 
 admin_params = {}
 auth_params = {}
 admin_sign_params = {}
 auth_sign_params = {}
 
-# Get list of Duo Groups
-# https://duo.com/docs/adminapi#retrieve-groups
+# Get list of all Duo Groups
+# Admin API
 admin_sign_params = sign("GET", duo_host, "/admin/v1/groups", admin_params, duo_admin_skey, duo_admin_ikey)
 admin_response = requests.get(("https://" + duo_host + "/admin/v1/groups"), headers={'username': duo_admin_ikey, 'Authorization': admin_sign_params["Authorization"], 'date': admin_sign_params["Date"]}, params=admin_params)
 
@@ -72,6 +71,7 @@ groups_list = []
 x = int(0)
 # Increment counter
 i = int(0)
+print("\nSelect a Duo group to phish")
 
 # Iterate through groups list
 for groups in json_admin_response['response']:
@@ -81,7 +81,7 @@ for groups in json_admin_response['response']:
 	i += 1
 
 	# Display 10 Duo groups at a time
-	while i >= 10: 
+	while i >= 2: 
 		more_groups = raw_input("View more groups? [y/n] ").lower()
 		if more_groups == 'y':
 			# Reset counter
@@ -91,24 +91,26 @@ for groups in json_admin_response['response']:
 			break
 		else:
 			print("Invalid response. Respond with 'y' or 'n' to continue")
-	if i >= 10:
+	if i >= 2:
 		break
 
-# Select group to pass to Duo			
+# Select a group number to pass to Duo			
 group_select = raw_input("Input a group number: ")
 group_select = int(group_select)
 
 # Create API string
 group_api = "/admin/v2/groups/"+groups_list[group_select]+"/users"
 
-# Get list of users in Duo Group
-# https://duo.com/docs/adminapi#v2-groups-get-users
+# Get list of all users in Duo Group
+# Admin API
 admin_sign_params = sign("GET", duo_host, group_api, admin_params, duo_admin_skey, duo_admin_ikey)
 admin_group_response = requests.get(("https://" + duo_host + group_api), headers={'username': duo_admin_ikey, 'Authorization': admin_sign_params["Authorization"], 'date': admin_sign_params["Date"]}, params=admin_params)
 
 # Load Duo users into JSON format
 json_admin_group_response = json.loads(admin_group_response.text)
+print("Phishing Duo users...")
 
+# Send a push to all users in selected Duo group
 # Auth API
 for response in json_admin_group_response['response']:
 	auth_params = {'username': (response['username']),'factor':'auto','device':'auto','async':'1'}
@@ -120,3 +122,6 @@ for response in json_admin_group_response['response']:
 	# Clear params for next post to Duo
 	auth_params = {}
 	auth_sign_params = {}
+
+print("Phishing completed!")
+print("View Duo admin panel for results")
