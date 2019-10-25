@@ -108,7 +108,7 @@ admin_group_response = requests.get(("https://" + duo_host + group_api), headers
 
 # Load Duo users into JSON format
 json_admin_group_response = json.loads(admin_group_response.text)
-print("Phishing Duo users...")
+print("\nPhishing Duo users...")
 
 # Send a push to all users in selected Duo group
 # Auth API
@@ -123,5 +123,5 @@ for response in json_admin_group_response['response']:
 	auth_params = {}
 	auth_sign_params = {}
 
-print("Phishing completed!")
+print("\nPhishing completed!")
 print("View Duo admin panel for results")
