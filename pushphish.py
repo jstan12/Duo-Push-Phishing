@@ -1,19 +1,16 @@
-# Purpose: Phishing Duo users
+# Duo Push Phishing
 # Author: Joe Stanulis
-# Created Date: 10/18/2019
-# Updated Date: 10/24/2019
 ##
 # Reference Links:
 # https://duo.com/docs/authapi
 # https://duo.com/docs/adminapi
 
-## TO DO
+## TO DO ##
 # User Pagination - Script is currently limited to 300 users
 # Group Pagination - Script is currently limited to 100 groups
-##
+####
 
-import base64, email, hmac, hashlib, urllib, requests
-import json
+import base64, email, hmac, hashlib, urllib, requests, json
 
 def sign(method, host, path, params, skey, ikey):
     """
@@ -50,10 +47,10 @@ def sign(method, host, path, params, skey, ikey):
 duo_host = "api-XXXXXXXX.duosecurity.com"
 # Duo Admin API keys
 duo_admin_ikey = "DXXXXXXXXXXXXXXXXXXX"
-duo_admin_skey = "XXXXXXXXXXXXXXXXXXXX"
+duo_admin_skey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 # Duo Auth API keys
-duo_auth_ikey = "XXXXXXXXXXXXXXXXXXXX"
-duo_auth_skey = "XXXXXXXXXXXXXXXXXXXX"
+duo_auth_ikey = "DXXXXXXXXXXXXXXXXXXX"
+duo_auth_skey = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 #### Duo Keys ####
 
 admin_params = {}
@@ -71,28 +68,33 @@ json_admin_response = json.loads(admin_response.text)
 
 # Array for groups
 groups_list = []
-i = int(0)
+# Number for group in array
 x = int(0)
+# Increment counter
+i = int(0)
 
 # Iterate through groups list
 for groups in json_admin_response['response']:
-    groups_list.append(groups['group_id'])
-    print(i,groups['name'])
-    i += 1
-    x += 1
+	groups_list.append(groups['group_id'])
+	print(x,groups['name'])
+	x += 1
+	i += 1
 
-    # Display 10 user groups at a time
-    if x > 10: 
-        more_groups = raw_input("View more groups?? [y/n] ")
-        if more_groups == 'y':
-            groups_list = []
-            i = int(0)
-            x = int(0)
-            continue
-        else:
-            break
+	# Display 10 Duo groups at a time
+	while i >= 10: 
+		more_groups = raw_input("View more groups? [y/n] ").lower()
+		if more_groups == 'y':
+			# Reset counter
+			i = int(0)
+			continue
+		elif more_groups == 'n':
+			break
+		else:
+			print("Invalid response. Respond with 'y' or 'n' to continue")
+	if i >= 10:
+		break
 
-# Select group to pass to Duo           
+# Select group to pass to Duo			
 group_select = raw_input("Input a group number: ")
 group_select = int(group_select)
 
@@ -109,12 +111,12 @@ json_admin_group_response = json.loads(admin_group_response.text)
 
 # Auth API
 for response in json_admin_group_response['response']:
-    auth_params = {'username': (response['username']),'factor':'auto','device':'auto','async':'1'}
-    auth_sign_params = sign("POST", duo_host, "/auth/v2/auth", auth_params, duo_auth_skey, duo_auth_ikey)
+	auth_params = {'username': (response['username']),'factor':'auto','device':'auto','async':'1'}
+	auth_sign_params = sign("POST", duo_host, "/auth/v2/auth", auth_params, duo_auth_skey, duo_auth_ikey)
 
-    auth_response = requests.post(("https://" + duo_host + "/auth/v2/auth"), headers={'username': duo_auth_ikey, 'Authorization': auth_sign_params["Authorization"], 'date': auth_sign_params["Date"]}, params=auth_params)
-    print(response['username'])
+	auth_response = requests.post(("https://" + duo_host + "/auth/v2/auth"), headers={'username': duo_auth_ikey, 'Authorization': auth_sign_params["Authorization"], 'date': auth_sign_params["Date"]}, params=auth_params)
+	print(response['username'])
 
-    # Clear params for next post to Duo
-    auth_params = {}
-    auth_sign_params = {}
+	# Clear params for next post to Duo
+	auth_params = {}
+	auth_sign_params = {}
