@@ -1,6 +1,8 @@
 # Duo Push Phishing
 Use Duo APIs to phish your users
 
+![CLI](https://i.imgur.com/pmPKULM.png)
+
 ## Setup
 Enable Admin API & Authentication API on Duo Security
 
@@ -11,5 +13,3 @@ Rename the Auth API to something familiar to your end users (Office 365, Salesfo
 ### Admin API
 Give 'Grant read resource' permissions
 ![Admin API](https://i.imgur.com/34OIlds.png)
-## Run the script
-![CLI](https://i.imgur.com/pmPKULM.png)
