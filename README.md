@@ -4,7 +4,7 @@ Use Duo APIs to phish your users
 ## Setup
 Enable Admin API & Authentication API on Duo Security
 
-Generate Duo Security keys for both APIs and input them into the script (Duo Keys in script)
+Generate Duo Security keys for both APIs and input them into the script
 ### Authentication API
 Rename the Auth API to something familiar to your end users (Office 365, Salesforce, etc.)
 ![Auth API](https://i.imgur.com/eVNRYDQ.png)
